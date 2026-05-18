@@ -87,38 +87,38 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 32: Survey Selection Constraints**
     - **Validates: Requirements 20.8**
 
-- [ ] 3. Checkpoint - Ensure all validation tests pass
+- [x] 3. Checkpoint - Ensure all validation tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. PhaseEngine service - core cycle calculation logic
-  - [ ] 4.1 Implement PhaseEngine with standard phase calculation
+- [x] 4. PhaseEngine service - core cycle calculation logic
+  - [x] 4.1 Implement PhaseEngine with standard phase calculation
     - Calculate current phase from start date and elapsed days using standard boundaries (Menstrual 1-5, Follicular 6-13, Ovulation 14, Early Luteal 15-21, Late Luteal 22-28)
     - Handle overdue cycles (elapsed > cycle length) by returning Late Luteal with overdue indicator
     - Support custom phase durations when provided
     - _Requirements: 8.1, 8.6_
 
-  - [ ]* 4.2 Write property test for phase calculation correctness
+  - [x] 4.2 Write property test for phase calculation correctness
     - **Property 17: Phase Calculation Correctness**
     - **Validates: Requirements 8.1, 8.6**
 
-  - [ ] 4.3 Implement phase duration scaling based on historical cycle data
+  - [x] 4.3 Implement phase duration scaling based on historical cycle data
     - Calculate average cycle length from 2+ historical records
     - Proportionally scale each phase duration relative to 28-day default
     - Ensure scaled durations sum exactly to average cycle length
     - _Requirements: 8.2_
 
-  - [ ]* 4.4 Write property test for phase duration scaling
+  - [x] 4.4 Write property test for phase duration scaling
     - **Property 18: Phase Duration Scaling Preserves Total**
     - **Validates: Requirements 8.2**
 
-  - [ ] 4.5 Implement 60-day phase prediction generator
+  - [x] 4.5 Implement 60-day phase prediction generator
     - Generate predictions covering exactly 60 days from current date
     - Use standard 28-day durations when fewer than 2 historical records exist
     - Use scaled durations when 2+ records available
     - Ensure no gaps or overlaps between predicted phases
     - _Requirements: 8.4_
 
-  - [ ]* 4.6 Write property test for 60-day prediction coverage
+  - [x] 4.6 Write property test for 60-day prediction coverage
     - **Property 19: 60-Day Prediction Coverage**
     - **Validates: Requirements 8.4**
 
