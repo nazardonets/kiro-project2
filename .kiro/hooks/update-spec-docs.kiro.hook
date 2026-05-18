@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Update Spec Documents",
+  "description": "When a new requirement or feature amendment is submitted, automatically update requirements.md and design.md to keep them in sync with the latest changes.",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check if the user's message introduces a new requirement, modifies an existing requirement, or amends a feature. If it does, update the requirements.md and design.md files located at .kiro/specs/know-your-woman-cycle/requirements.md and .kiro/specs/know-your-woman-cycle/design.md to reflect the changes. Ensure both documents remain consistent with each other and accurately capture the updated requirements and design decisions. If the message is not related to requirements or feature changes, do nothing."
+  }
+}
