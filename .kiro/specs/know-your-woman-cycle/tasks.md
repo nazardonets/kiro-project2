@@ -6,15 +6,15 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
 
 ## Tasks
 
-- [ ] 1. Project setup and database schema
-  - [ ] 1.1 Initialize Next.js 14 project with App Router, Tailwind CSS, shadcn/ui, and configure Supabase client, Resend, Zod, vitest, and fast-check
+- [x] 1. Project setup and database schema
+  - [x] 1.1 Initialize Next.js 14 project with App Router, Tailwind CSS, shadcn/ui, and configure Supabase client, Resend, Zod, vitest, and fast-check
     - Create Next.js 14 app with TypeScript
     - Install dependencies: @supabase/supabase-js, @supabase/ssr, resend, zod, vitest, fast-check, @testing-library/react
     - Configure vitest with fast-check support
     - Set up environment variables structure (.env.local.example)
     - _Requirements: 4.1, 4.2_
 
-  - [ ] 1.2 Create Supabase database migration with all tables, constraints, enums, and RLS policies
+  - [x] 1.2 Create Supabase database migration with all tables, constraints, enums, and RLS policies
     - Define enums: user_role, user_status, invite_status, partner_link_status, cycle_phase, notification_type, notification_status, notification_frequency, delivery_time, date_request_status
     - Create tables: user, partner_link, secure_invite, cycle_record, phase_customization, personal_note, sharing_preferences, survey_response, daily_summary, date_request, notification_preferences, notification_log, admin_annotation, admin_override
     - Add check constraints (password length, note length, retry count, date range)
@@ -22,13 +22,13 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Implement RLS policies for data access control
     - _Requirements: 1.1, 1.5, 2.1, 2.2, 5.1, 6.7, 7.1_
 
-  - [ ] 1.3 Define TypeScript interfaces and Zod schemas for all data models
+  - [x] 1.3 Define TypeScript interfaces and Zod schemas for all data models
     - Create types for User, PartnerLink, SecureInvite, CycleRecord, PhaseCustomization, PersonalNote, SharingPreferences, SurveyResponse, DailySummary, DateRequest, NotificationPreferences, NotificationLog, AdminAnnotation, AdminOverride
     - Create Zod validation schemas for all API inputs
     - Define shared enums and constants (phase durations, limits)
     - _Requirements: 1.1, 7.1, 9.1, 9.4, 11.2, 11.3, 11.5_
 
-  - [ ] 1.4 Configure code quality tooling and engineering standards
+  - [x] 1.4 Configure code quality tooling and engineering standards
     - Configure ESLint with @typescript-eslint/strict ruleset and Next.js recommended rules
     - Configure Prettier (2-space indent, single quotes, trailing commas, 100 char line width)
     - Enable TypeScript strict mode (strict: true in tsconfig.json)
@@ -38,52 +38,52 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Create README.md with setup instructions, architecture overview, environment variables, and development workflows
     - _Requirements: 21.1, 21.2, 21.6, 21.7, 22.1, 22.3, 23.5, 24.1, 24.2, 24.3, 24.4, 24.5, 24.6_
 
-- [ ] 2. Validation layer and core utilities
-  - [ ] 2.1 Implement password validation function with detailed error messages
+- [x] 2. Validation layer and core utilities
+  - [x] 2.1 Implement password validation function with detailed error messages
     - Validate length 8-128 characters, at least one uppercase, one lowercase, one digit
     - Return field-specific error messages indicating which requirements are not met
     - _Requirements: 1.1, 1.7_
 
-  - [ ]* 2.2 Write property test for password validation
+  - [x] 2.2 Write property test for password validation
     - **Property 1: Password Validation Correctness**
     - **Validates: Requirements 1.1, 1.7**
 
-  - [ ] 2.3 Implement cycle start date validation function
+  - [x] 2.3 Implement cycle start date validation function
     - Accept dates within [today - 365 days, today]
     - Reject future dates and dates older than 365 days
     - Return appropriate validation error messages
     - _Requirements: 7.1, 7.4_
 
-  - [ ]* 2.4 Write property test for cycle start date validation
+  - [x] 2.4 Write property test for cycle start date validation
     - **Property 14: Cycle Start Date Range Validation**
     - **Validates: Requirements 7.1, 7.4**
 
-  - [ ] 2.5 Implement phase duration customization validation
+  - [x] 2.5 Implement phase duration customization validation
     - Validate each duration is between 1 and 14 days
     - Validate sum of all durations equals total cycle length
     - Return specific error messages for constraint violations
     - _Requirements: 9.1, 9.2, 9.3_
 
-  - [ ]* 2.6 Write property test for phase duration validation
+  - [x] 2.6 Write property test for phase duration validation
     - **Property 20: Phase Duration Customization Validation**
     - **Validates: Requirements 9.1, 9.2, 9.3**
 
-  - [ ] 2.7 Implement text field length validation utility
+  - [x] 2.7 Implement text field length validation utility
     - Validate personal notes (max 500 chars), location/mood (max 200 chars), annotations/overrides (1-2000 chars), suspension reason (1-500 chars), behavioral prompts (max 280 chars)
     - Return field-specific constraint violation messages
     - _Requirements: 9.4, 11.2, 11.3, 11.5, 6.3, 6.5, 5.4_
 
-  - [ ]* 2.8 Write property test for text field length validation
+  - [x] 2.8 Write property test for text field length validation
     - **Property 21: Text Field Length Validation**
     - **Validates: Requirements 9.4, 11.2, 11.3, 11.5, 6.3, 6.5, 5.4**
 
-  - [ ] 2.9 Implement survey response validation
+  - [x] 2.9 Implement survey response validation
     - Validate Questions 1, 2, 3, 5, 6 have exactly one selected response
     - Validate Question 4 has one or more selected responses
     - Validate free-text field max 200 characters for Question 4 "Other"
     - _Requirements: 20.8_
 
-  - [ ]* 2.10 Write property test for survey selection constraints
+  - [x] 2.10 Write property test for survey selection constraints
     - **Property 32: Survey Selection Constraints**
     - **Validates: Requirements 20.8**
 
