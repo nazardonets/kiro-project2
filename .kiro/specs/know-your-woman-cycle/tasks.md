@@ -122,18 +122,18 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 19: 60-Day Prediction Coverage**
     - **Validates: Requirements 8.4**
 
-- [ ] 5. CycleService - cycle data management
-  - [ ] 5.1 Implement CycleService with CRUD operations for cycle records
+- [x] 5. CycleService - cycle data management
+  - [x] 5.1 Implement CycleService with CRUD operations for cycle records
     - Create new cycle records with validation
     - Enforce max 12 historical records per user
     - Implement cycle overlap conflict detection based on average cycle length or 28-day default
     - _Requirements: 7.2, 7.3, 7.5_
 
-  - [ ]* 5.2 Write property test for historical cycle record limit
+  - [x] 5.2 Write property test for historical cycle record limit
     - **Property 15: Historical Cycle Record Limit**
     - **Validates: Requirements 7.3**
 
-  - [ ]* 5.3 Write property test for cycle overlap conflict detection
+  - [x] 5.3 Write property test for cycle overlap conflict detection
     - **Property 16: Cycle Overlap Conflict Detection**
     - **Validates: Requirements 7.5**
 
