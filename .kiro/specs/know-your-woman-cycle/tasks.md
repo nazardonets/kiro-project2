@@ -461,8 +461,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Submit and store responses before granting dashboard access
     - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9, 20.19_
 
-- [ ] 21. Frontend - Primary User Dashboard
-  - [ ] 21.1 Implement Primary Dashboard with phase display, predictions, and insights
+- [x] 21. Frontend - Primary User Dashboard
+  - [x] 21.1 Implement Primary Dashboard with phase display, predictions, and insights
     - Display current phase name and day number within phase
     - Display 60-day predicted upcoming phases
     - Display emotional, cognitive, and behavioral tendencies for current phase
@@ -471,27 +471,27 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Empty state with prompt to input cycle start date
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-  - [ ] 21.2 Implement cycle data input (date picker) and history view
+  - [x] 21.2 Implement cycle data input (date picker) and history view
     - Date picker with selectable range [today - 365 days, today]
     - Confirmation message on successful save
     - Support up to 12 historical cycle start dates
     - Conflict warning for overlapping dates
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 21.3 Implement phase customization UI and personal notes
+  - [x] 21.3 Implement phase customization UI and personal notes
     - Phase duration adjustment (1-14 days per phase, must sum to cycle length)
     - Validation error display when sum doesn't match
     - Personal notes per phase (max 500 chars)
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-  - [ ] 21.4 Implement sharing controls UI
+  - [x] 21.4 Implement sharing controls UI
     - Toggle individual insight categories (emotional tendencies, behavioral patterns, energy levels, communication guidance)
     - Toggle notification types (daily summaries, phase alerts, partner reminders)
     - All enabled by default on partner linking
     - Real-time propagation within 5 seconds
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 21.5 Implement Date Request form and submission
+  - [x] 21.5 Implement Date Request form and submission
     - "Request a Date" action on Primary Dashboard
     - Optional fields: location, mood, timing (specific date or window), personal notes
     - Submit and send email to partner
