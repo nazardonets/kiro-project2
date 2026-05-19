@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import { NavigationErrorBoundary } from '@/components/layout/navigation-error-boundary';
+import { ResponsiveLayout, adminNavItems } from '@/components/layout/responsive-layout';
 import { createClient } from '@/lib/supabase/client';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -16,8 +18,9 @@ type AuthState =
 /**
  * Admin layout with authentication gate.
  * Verifies the user has admin role before granting access.
+ * Navigation shell renders only after authorization succeeds.
  *
- * Validates: Requirement 5.1
+ * Validates: Requirement 5.1, 4.3
  */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<AuthState>({ type: 'loading' });
@@ -80,42 +83,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-background">
-      <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <h1 className="text-xl font-bold">Admin Panel</h1>
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Admin navigation">
-            <a
-              href="/admin"
-              className="inline-flex min-h-[44px] items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Users
-            </a>
-            <a
-              href="/admin/cycles"
-              className="inline-flex min-h-[44px] items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Cycles
-            </a>
-          </nav>
-          {/* Mobile nav links */}
-          <nav className="flex items-center gap-2 md:hidden" aria-label="Admin navigation">
-            <a
-              href="/admin"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Users
-            </a>
-            <a
-              href="/admin/cycles"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Cycles
-            </a>
-          </nav>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">{children}</main>
-    </div>
+    <NavigationErrorBoundary homeHref="/admin">
+      <ResponsiveLayout navItems={adminNavItems} activeMatchStrategy="prefix">
+        {children}
+      </ResponsiveLayout>
+    </NavigationErrorBoundary>
   );
 }

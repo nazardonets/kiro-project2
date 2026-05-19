@@ -319,10 +319,10 @@ describe('AdminCycleManagementPage', () => {
     render(<AdminCycleManagementPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('← Back to Admin Panel')).toBeInTheDocument();
+      expect(screen.getByText('Back to Users')).toBeInTheDocument();
     });
 
-    const backLink = screen.getByText('← Back to Admin Panel');
-    expect(backLink.closest('a')).toHaveAttribute('href', '/admin');
+    const backLink = screen.getByRole('link', { name: /Back to Users/ });
+    expect(backLink).toHaveAttribute('href', '/admin');
   });
 });

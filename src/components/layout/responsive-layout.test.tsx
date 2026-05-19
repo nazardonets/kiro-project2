@@ -1,8 +1,17 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+
+import { ResponsiveLayout, isActiveByPrefix, isActiveByExact } from './responsive-layout';
+
+// ─── Mock next/navigation ───────────────────────────────────────────────────
+
+let mockPathname = '/dashboard';
+vi.mock('next/navigation', () => ({
+  usePathname: () => mockPathname,
+}));
 
 // ─── Helper: Responsive Layout Shell ────────────────────────────────────────
 
@@ -386,5 +395,330 @@ describe('Keyboard Navigation - WCAG 2.1 Level AA Operability', () => {
     // Both buttons should be findable by their accessible name
     expect(screen.getByRole('button', { name: 'Labeled Button' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Icon action' })).toBeInTheDocument();
+  });
+});
+
+// ─── Tests: ResponsiveLayout Enhancements ───────────────────────────────────
+
+const testNavItems = [
+  { href: '/dashboard', label: 'Dashboard', icon: <span data-testid="icon-dashboard">D</span> },
+  { href: '/dashboard/cycle', label: 'Cycle', icon: <span data-testid="icon-cycle">C</span> },
+  {
+    href: '/dashboard/sharing',
+    label: 'Sharing',
+    icon: <span data-testid="icon-sharing">S</span>,
+  },
+];
+
+describe('ResponsiveLayout - Focus Trap (Requirement 6.5)', () => {
+  beforeEach(() => {
+    mockPathname = '/dashboard';
+    document.body.style.overflow = '';
+    // jsdom doesn't support offsetParent (always null), so we mock it
+    // to allow the focus trap hook to find focusable elements
+    Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+      get() {
+        return this.parentNode;
+      },
+      configurable: true,
+    });
+  });
+
+  it('cycles focus through menu items on Tab at last element', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    // Open the hamburger menu
+    const hamburgerButton = screen.getByRole('button', { name: /open menu/i });
+    fireEvent.click(hamburgerButton);
+
+    // The mobile menu should be open
+    const mobileMenu = screen.getByLabelText('Mobile navigation menu');
+    expect(mobileMenu).toBeInTheDocument();
+
+    // Get all focusable links in the mobile menu
+    const menuLinks = mobileMenu.querySelectorAll('a[href]');
+    expect(menuLinks.length).toBe(3);
+
+    // Focus the last element
+    const lastLink = menuLinks[menuLinks.length - 1] as HTMLElement;
+    lastLink.focus();
+    expect(document.activeElement).toBe(lastLink);
+
+    // Press Tab at the last element - should wrap to first
+    fireEvent.keyDown(document, { key: 'Tab', code: 'Tab' });
+
+    const firstLink = menuLinks[0] as HTMLElement;
+    expect(document.activeElement).toBe(firstLink);
+  });
+
+  it('cycles focus backward on Shift+Tab at first element', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    // Open the hamburger menu
+    const hamburgerButton = screen.getByRole('button', { name: /open menu/i });
+    fireEvent.click(hamburgerButton);
+
+    const mobileMenu = screen.getByLabelText('Mobile navigation menu');
+    const menuLinks = mobileMenu.querySelectorAll('a[href]');
+
+    // Focus the first element
+    const firstLink = menuLinks[0] as HTMLElement;
+    firstLink.focus();
+    expect(document.activeElement).toBe(firstLink);
+
+    // Press Shift+Tab at the first element - should wrap to last
+    fireEvent.keyDown(document, { key: 'Tab', code: 'Tab', shiftKey: true });
+
+    const lastLink = menuLinks[menuLinks.length - 1] as HTMLElement;
+    expect(document.activeElement).toBe(lastLink);
+  });
+});
+
+describe('ResponsiveLayout - Escape Key (Requirement 6.6)', () => {
+  beforeEach(() => {
+    mockPathname = '/dashboard';
+    document.body.style.overflow = '';
+  });
+
+  it('closes menu and returns focus to hamburger button on Escape', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    // Open the hamburger menu
+    const hamburgerButton = screen.getByRole('button', { name: /open menu/i });
+    fireEvent.click(hamburgerButton);
+
+    // Menu should be open
+    expect(screen.getByLabelText('Mobile navigation menu')).toBeInTheDocument();
+
+    // Press Escape
+    fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+
+    // Menu should be closed
+    expect(screen.queryByLabelText('Mobile navigation menu')).not.toBeInTheDocument();
+
+    // Focus should return to the hamburger button
+    expect(document.activeElement).toBe(hamburgerButton);
+  });
+});
+
+describe('ResponsiveLayout - Outside Click (Requirement 1.6)', () => {
+  beforeEach(() => {
+    mockPathname = '/dashboard';
+    document.body.style.overflow = '';
+  });
+
+  it('closes the menu when clicking outside', () => {
+    render(
+      <div>
+        <div data-testid="outside-area">Outside</div>
+        <ResponsiveLayout navItems={testNavItems}>
+          <p>Content</p>
+        </ResponsiveLayout>
+      </div>,
+    );
+
+    // Open the hamburger menu
+    const hamburgerButton = screen.getByRole('button', { name: /open menu/i });
+    fireEvent.click(hamburgerButton);
+
+    // Menu should be open
+    expect(screen.getByLabelText('Mobile navigation menu')).toBeInTheDocument();
+
+    // Click outside the menu
+    const outsideArea = screen.getByTestId('outside-area');
+    fireEvent.click(outsideArea);
+
+    // Menu should be closed
+    expect(screen.queryByLabelText('Mobile navigation menu')).not.toBeInTheDocument();
+  });
+});
+
+describe('ResponsiveLayout - activeMatchStrategy="prefix" (Requirement 1.2)', () => {
+  beforeEach(() => {
+    document.body.style.overflow = '';
+  });
+
+  it('highlights the correct item using prefix match for sub-paths', () => {
+    mockPathname = '/dashboard/cycle';
+
+    render(
+      <ResponsiveLayout navItems={testNavItems} activeMatchStrategy="prefix">
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    // The "Cycle" nav item should be active (prefix match for /dashboard/cycle)
+    const desktopNav = screen.getByLabelText('Main navigation');
+    const cycleLink = desktopNav.querySelector('a[href="/dashboard/cycle"]');
+    expect(cycleLink).toHaveAttribute('aria-current', 'page');
+
+    // The "Dashboard" root item should NOT be active (exact match for root)
+    const dashboardLink = desktopNav.querySelector('a[href="/dashboard"]');
+    expect(dashboardLink).not.toHaveAttribute('aria-current', 'page');
+  });
+
+  it('highlights root item only on exact root path', () => {
+    mockPathname = '/dashboard';
+
+    render(
+      <ResponsiveLayout navItems={testNavItems} activeMatchStrategy="prefix">
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    const desktopNav = screen.getByLabelText('Main navigation');
+    const dashboardLink = desktopNav.querySelector('a[href="/dashboard"]');
+    expect(dashboardLink).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('isActiveByPrefix returns true for matching prefix', () => {
+    expect(isActiveByPrefix('/dashboard/cycle/details', '/dashboard/cycle')).toBe(true);
+  });
+
+  it('isActiveByPrefix returns false for root when on sub-path', () => {
+    expect(isActiveByPrefix('/dashboard/cycle', '/dashboard')).toBe(false);
+  });
+
+  it('isActiveByPrefix returns true for root on exact match', () => {
+    expect(isActiveByPrefix('/dashboard', '/dashboard')).toBe(true);
+  });
+});
+
+describe('ResponsiveLayout - activeMatchStrategy="exact" (Requirement 2.2)', () => {
+  beforeEach(() => {
+    document.body.style.overflow = '';
+  });
+
+  it('highlights only the exactly matching item', () => {
+    mockPathname = '/partner';
+
+    const partnerItems = [
+      { href: '/partner', label: 'Insights', icon: <span>I</span> },
+      { href: '/partner/settings', label: 'Settings', icon: <span>S</span> },
+    ];
+
+    render(
+      <ResponsiveLayout navItems={partnerItems} activeMatchStrategy="exact">
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    const desktopNav = screen.getByLabelText('Main navigation');
+    const insightsLink = desktopNav.querySelector('a[href="/partner"]');
+    const settingsLink = desktopNav.querySelector('a[href="/partner/settings"]');
+
+    expect(insightsLink).toHaveAttribute('aria-current', 'page');
+    expect(settingsLink).not.toHaveAttribute('aria-current', 'page');
+  });
+
+  it('does not highlight any item when no exact match exists', () => {
+    mockPathname = '/partner/other';
+
+    const partnerItems = [
+      { href: '/partner', label: 'Insights', icon: <span>I</span> },
+      { href: '/partner/settings', label: 'Settings', icon: <span>S</span> },
+    ];
+
+    render(
+      <ResponsiveLayout navItems={partnerItems} activeMatchStrategy="exact">
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    const desktopNav = screen.getByLabelText('Main navigation');
+    const insightsLink = desktopNav.querySelector('a[href="/partner"]');
+    const settingsLink = desktopNav.querySelector('a[href="/partner/settings"]');
+
+    expect(insightsLink).not.toHaveAttribute('aria-current', 'page');
+    expect(settingsLink).not.toHaveAttribute('aria-current', 'page');
+  });
+
+  it('isActiveByExact returns true only for exact match', () => {
+    expect(isActiveByExact('/partner', '/partner')).toBe(true);
+    expect(isActiveByExact('/partner/settings', '/partner')).toBe(false);
+    expect(isActiveByExact('/partner', '/partner/settings')).toBe(false);
+  });
+});
+
+describe('ResponsiveLayout - Unique aria-labels on nav landmarks (Requirement 6.7)', () => {
+  beforeEach(() => {
+    mockPathname = '/dashboard';
+    document.body.style.overflow = '';
+  });
+
+  it('all nav landmarks have unique aria-labels', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    // Open the hamburger menu to render the mobile nav menu
+    const hamburgerButton = screen.getByRole('button', { name: /open menu/i });
+    fireEvent.click(hamburgerButton);
+
+    // Get all nav elements
+    const navElements = screen.getAllByRole('navigation');
+
+    // Should have at least 3 nav landmarks: desktop, mobile menu, bottom nav
+    expect(navElements.length).toBeGreaterThanOrEqual(3);
+
+    // Collect all aria-labels
+    const ariaLabels = navElements.map((nav) => nav.getAttribute('aria-label'));
+
+    // All should have aria-label
+    ariaLabels.forEach((label) => {
+      expect(label).toBeTruthy();
+    });
+
+    // All aria-labels should be unique
+    const uniqueLabels = new Set(ariaLabels);
+    expect(uniqueLabels.size).toBe(ariaLabels.length);
+  });
+
+  it('desktop nav has aria-label "Main navigation"', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    expect(screen.getByLabelText('Main navigation')).toBeInTheDocument();
+  });
+
+  it('bottom nav has aria-label "Bottom navigation"', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    expect(screen.getByLabelText('Bottom navigation')).toBeInTheDocument();
+  });
+
+  it('mobile menu has aria-label "Mobile navigation menu"', () => {
+    render(
+      <ResponsiveLayout navItems={testNavItems}>
+        <p>Content</p>
+      </ResponsiveLayout>,
+    );
+
+    // Open the hamburger menu
+    const hamburgerButton = screen.getByRole('button', { name: /open menu/i });
+    fireEvent.click(hamburgerButton);
+
+    expect(screen.getByLabelText('Mobile navigation menu')).toBeInTheDocument();
   });
 });

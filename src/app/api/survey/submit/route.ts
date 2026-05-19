@@ -193,11 +193,14 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch {
+  } catch (error) {
+    console.error('[POST /api/survey/submit] Unhandled error:', error);
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       {
         code: 'INTERNAL_ERROR',
         message: 'Something went wrong. Please try again.',
+        debug: message,
       },
       { status: 500 },
     );

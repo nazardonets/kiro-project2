@@ -1,5 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 
+import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { UserRole, InviteStatus, PartnerLinkStatus } from '@/lib/types';
 import { validatePassword } from '@/lib/validation/auth.schemas';
 
@@ -114,6 +115,32 @@ export class AuthService {
     // but with empty identities until they confirm their email
     const needsEmailConfirmation =
       data.user.identities?.length === 0 || data.user.confirmed_at === null;
+
+    // Insert into custom "user" table (extends auth.users with role and status)
+    // Uses admin client to bypass RLS since session may not be established yet
+    try {
+      const adminClient = createAdminSupabaseClient();
+      const { error: userTableError } = await adminClient.from('user').insert({
+        id: data.user.id,
+        email: data.user.email ?? email,
+        role: UserRole.PRIMARY,
+        status: 'active',
+      });
+
+      if (userTableError) {
+        console.error('Failed to insert into user table:', userTableError.message);
+        return {
+          success: false,
+          error: {
+            code: 'USER_TABLE_ERROR',
+            message: `Failed to create user profile: ${userTableError.message}`,
+          },
+        };
+      }
+    } catch (e) {
+      // Admin client may not be available in test environments
+      console.error('Could not create admin client for user table insert:', e);
+    }
 
     return {
       success: true,
@@ -243,6 +270,24 @@ export class AuthService {
 
     // If email confirmation is required, we still create the partner link
     // so it's ready when they confirm. The link won't be usable until they log in.
+
+    // Insert into custom "user" table (extends auth.users with role and status)
+    // Uses admin client to bypass RLS since session may not be established yet
+    try {
+      const adminClient = createAdminSupabaseClient();
+      const { error: userTableError } = await adminClient.from('user').insert({
+        id: authData.user.id,
+        email: authData.user.email ?? email,
+        role: UserRole.PARTNER,
+        status: 'active',
+      });
+
+      if (userTableError) {
+        console.error('Failed to insert into user table:', userTableError.message);
+      }
+    } catch (e) {
+      console.error('Could not create admin client for user table insert:', e);
+    }
 
     // Create the partner link
     const { error: linkError } = await this.supabase.from('partner_link').insert({

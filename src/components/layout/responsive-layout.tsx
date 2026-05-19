@@ -1,17 +1,20 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { cn } from '@/lib/utils';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-interface NavItem {
+export interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
 }
+
+export type ActiveMatchStrategy = 'prefix' | 'exact';
 
 interface ResponsiveLayoutProps {
   children: React.ReactNode;
@@ -20,6 +23,31 @@ interface ResponsiveLayoutProps {
   headerContent?: React.ReactNode;
   /** Whether to show the mobile bottom navigation */
   showMobileNav?: boolean;
+  /** Strategy for determining the active nav item. Defaults to 'prefix'. */
+  activeMatchStrategy?: ActiveMatchStrategy;
+}
+
+// ─── Active Match Functions ─────────────────────────────────────────────────
+
+/**
+ * Prefix match: for root paths (e.g., '/dashboard') returns exact match only,
+ * for other items returns true if pathname starts with the href.
+ */
+export function isActiveByPrefix(pathname: string, href: string): boolean {
+  // Root-level items (no sub-path after the section) use exact match
+  // e.g., '/dashboard' should only match '/dashboard', not '/dashboard/cycle'
+  const segments = href.split('/').filter(Boolean);
+  if (segments.length <= 1) {
+    return pathname === href;
+  }
+  return pathname.startsWith(href);
+}
+
+/**
+ * Exact match: returns true only if pathname strictly equals href.
+ */
+export function isActiveByExact(pathname: string, href: string): boolean {
+  return pathname === href;
 }
 
 // ─── Icons (inline SVG for minimal dependencies) ────────────────────────────
@@ -99,25 +127,36 @@ export function ResponsiveLayout({
   navItems = [],
   headerContent,
   showMobileNav = true,
+  activeMatchStrategy = 'prefix',
 }: ResponsiveLayoutProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLElement>(null);
+  const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Determine if a nav item is active based on the chosen strategy
+  const isActive = (href: string): boolean => {
+    if (activeMatchStrategy === 'exact') {
+      return isActiveByExact(pathname, href);
+    }
+    return isActiveByPrefix(pathname, href);
+  };
+
+  // Callback to close the mobile menu (used by focus trap on Escape)
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+  }, []);
+
+  // Focus trap for hamburger menu (Requirements 6.5, 6.6)
+  useFocusTrap(mobileMenuRef, mobileMenuOpen, {
+    triggerRef: hamburgerButtonRef,
+    onEscape: closeMobileMenu,
+  });
 
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
-
-  // Close mobile menu on Escape key
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape' && mobileMenuOpen) {
-        setMobileMenuOpen(false);
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -129,6 +168,24 @@ export function ResponsiveLayout({
     return () => {
       document.body.style.overflow = '';
     };
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu on outside tap/click
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    function handleOutsideClick(e: MouseEvent) {
+      const target = e.target as Node;
+      const isInsideMenu = mobileMenuRef.current?.contains(target);
+      const isHamburgerButton = hamburgerButtonRef.current?.contains(target);
+
+      if (!isInsideMenu && !isHamburgerButton) {
+        setMobileMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
   }, [mobileMenuOpen]);
 
   return (
@@ -154,11 +211,11 @@ export function ResponsiveLayout({
                   'inline-flex min-h-tap-target items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   'hover:bg-accent hover:text-accent-foreground',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  pathname === item.href
+                  isActive(item.href)
                     ? 'bg-accent text-accent-foreground'
                     : 'text-muted-foreground',
                 )}
-                aria-current={pathname === item.href ? 'page' : undefined}
+                aria-current={isActive(item.href) ? 'page' : undefined}
               >
                 {item.label}
               </a>
@@ -167,6 +224,7 @@ export function ResponsiveLayout({
 
           {/* Mobile hamburger menu button */}
           <button
+            ref={hamburgerButtonRef}
             type="button"
             className={cn(
               'inline-flex min-h-tap-target min-w-tap-target items-center justify-center rounded-md md:hidden',
@@ -184,11 +242,11 @@ export function ResponsiveLayout({
 
         {/* Mobile slide-down menu */}
         {mobileMenuOpen && (
-          <div
+          <nav
+            ref={mobileMenuRef}
             id="mobile-menu"
             className="border-t bg-background md:hidden"
-            role="navigation"
-            aria-label="Mobile navigation"
+            aria-label="Mobile navigation menu"
           >
             <div className="space-y-1 px-4 py-3">
               {navItems.map((item) => (
@@ -199,18 +257,18 @@ export function ResponsiveLayout({
                     'flex min-h-tap-target items-center gap-3 rounded-md px-3 py-2 text-base font-medium transition-colors',
                     'hover:bg-accent hover:text-accent-foreground',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    pathname === item.href
+                    isActive(item.href)
                       ? 'bg-accent text-accent-foreground'
                       : 'text-muted-foreground',
                   )}
-                  aria-current={pathname === item.href ? 'page' : undefined}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
                 >
                   {item.icon}
                   {item.label}
                 </a>
               ))}
             </div>
-          </div>
+          </nav>
         )}
       </header>
 
@@ -234,8 +292,8 @@ export function ResponsiveLayout({
             <a
               key={item.href}
               href={item.href}
-              className={cn(pathname === item.href ? 'text-primary' : '')}
-              aria-current={pathname === item.href ? 'page' : undefined}
+              className={cn(isActive(item.href) ? 'text-primary' : '')}
+              aria-current={isActive(item.href) ? 'page' : undefined}
               aria-label={item.label}
             >
               {item.icon}
@@ -317,6 +375,34 @@ export const primaryNavItems: NavItem[] = [
       </svg>
     ),
   },
+  {
+    href: '/dashboard/date-request',
+    label: 'Date Request',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+        aria-hidden="true"
+      >
+        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+        <line x1="16" x2="16" y1="2" y2="6" />
+        <line x1="8" x2="8" y1="2" y2="6" />
+        <line x1="3" x2="21" y1="10" y2="10" />
+        <path d="M8 14h.01" />
+        <path d="M12 14h.01" />
+        <path d="M16 14h.01" />
+        <path d="M8 18h.01" />
+        <path d="M12 18h.01" />
+        <path d="M16 18h.01" />
+      </svg>
+    ),
+  },
 ];
 
 export const partnerNavItems: NavItem[] = [
@@ -342,6 +428,51 @@ export const partnerNavItems: NavItem[] = [
       >
         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
         <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
+  },
+];
+
+export const adminNavItems: NavItem[] = [
+  {
+    href: '/admin',
+    label: 'Users',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+        aria-hidden="true"
+      >
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    href: '/admin/cycles',
+    label: 'Cycles',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
       </svg>
     ),
   },

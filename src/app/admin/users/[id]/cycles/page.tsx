@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
+import { BackLink } from '@/components/layout/back-link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -373,9 +373,7 @@ export default function AdminCycleManagementPage() {
   if (error) {
     return (
       <div className="mx-auto max-w-4xl space-y-4 p-4 sm:p-6">
-        <Link href="/admin" className="text-sm text-primary hover:underline">
-          ← Back to Admin Panel
-        </Link>
+        <BackLink href="/admin" label="Back to Users" />
         <div className="flex min-h-[40vh] items-center justify-center">
           <div className="text-center">
             <p className="text-destructive">{error}</p>
@@ -396,12 +394,10 @@ export default function AdminCycleManagementPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-4 sm:p-6">
+      <BackLink href="/admin" label="Back to Users" />
       <div className="flex items-center justify-between">
         <div>
-          <Link href="/admin" className="text-sm text-primary hover:underline">
-            ← Back to Admin Panel
-          </Link>
-          <h1 className="mt-2 text-2xl font-bold">Cycle Instance Management</h1>
+          <h1 className="text-2xl font-bold">Cycle Instance Management</h1>
           <p className="text-sm text-muted-foreground">User ID: {userId}</p>
         </div>
       </div>
