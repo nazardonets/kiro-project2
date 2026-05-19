@@ -179,6 +179,7 @@ export async function GET() {
       {
         insights: filteredInsights,
         personalNote: personalNotes?.content || null,
+        primaryUserId,
         phaseInfo: {
           currentPhase: currentPhase.phase,
           dayInPhase: currentPhase.dayInPhase,

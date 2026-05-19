@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { GuidancePanel, GuidancePanelData } from '@/components/dashboard/guidance-panel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRealtimeSubscription, RealtimeConnectionStatus } from '@/hooks/useRealtimeSubscription';
 import { CyclePhase } from '@/lib/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -79,6 +80,7 @@ const PHASE_COLORS: Record<CyclePhase, string> = {
 
 export default function PartnerDashboardPage() {
   const [state, setState] = useState<DashboardState>({ type: 'loading' });
+  const [primaryUserId, setPrimaryUserId] = useState<string | null>(null);
   const previousPhaseRef = useRef<CyclePhase | null>(null);
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -145,6 +147,11 @@ export default function PartnerDashboardPage() {
       // Determine phase info from insights or summary
       const phaseInfo: PhaseInfo = insightsBody.phaseInfo;
 
+      // Extract primaryUserId for Realtime subscription if available
+      if (insightsBody.primaryUserId) {
+        setPrimaryUserId(insightsBody.primaryUserId);
+      }
+
       // Track phase changes
       if (
         previousPhaseRef.current !== null &&
@@ -167,10 +174,20 @@ export default function PartnerDashboardPage() {
     }
   }, []);
 
+  // Supabase Realtime subscription for live updates (Req 2.3, 3.4, 12.6)
+  // Pushes sharing preference and cycle data changes within 5 seconds
+  const { connectionStatus, isUsingFallback } = useRealtimeSubscription({
+    primaryUserId,
+    onSharingChange: fetchData,
+    onCycleDataChange: fetchData,
+    enabled: state.type !== 'error',
+  });
+
   useEffect(() => {
     fetchData();
 
     // Set up polling every 60 seconds to detect phase changes (Requirement 12.6)
+    // This runs in addition to Realtime for phase transition detection
     pollIntervalRef.current = setInterval(() => {
       fetchData();
     }, POLL_INTERVAL_MS);
@@ -217,7 +234,14 @@ export default function PartnerDashboardPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-4 sm:p-6">
-      <h1 className="text-2xl font-bold">Partner Dashboard</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Partner Dashboard</h1>
+        {/* Subtle reconnecting indicator per design spec (Realtime Connection Loss) */}
+        <RealtimeStatusIndicator
+          connectionStatus={connectionStatus}
+          isUsingFallback={isUsingFallback}
+        />
+      </div>
 
       {/* Daily Summary — first visible section, no scrolling required (Requirement 15.6) */}
       {state.dailySummary && (
@@ -436,4 +460,38 @@ function PersonalNoteCard({ note }: { note: string }) {
       </CardContent>
     </Card>
   );
+}
+
+/**
+ * Subtle connection status indicator.
+ * Shows "reconnecting..." when Realtime is disconnected (per design spec error handling).
+ */
+function RealtimeStatusIndicator({
+  connectionStatus,
+  isUsingFallback,
+}: {
+  connectionStatus: RealtimeConnectionStatus;
+  isUsingFallback: boolean;
+}) {
+  if (connectionStatus === 'connected' && !isUsingFallback) {
+    return null;
+  }
+
+  if (connectionStatus === 'connecting') {
+    return (
+      <span className="text-xs text-muted-foreground animate-pulse" data-testid="realtime-status">
+        Reconnecting...
+      </span>
+    );
+  }
+
+  if (isUsingFallback || connectionStatus === 'error') {
+    return (
+      <span className="text-xs text-muted-foreground" data-testid="realtime-status">
+        Live updates paused
+      </span>
+    );
+  }
+
+  return null;
 }

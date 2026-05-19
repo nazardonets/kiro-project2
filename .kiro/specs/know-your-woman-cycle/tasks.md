@@ -558,17 +558,17 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Test keyboard navigation
     - _Requirements: 4.2, 4.3, 4.4_
 
-- [~] 25. Checkpoint - Ensure all frontend tests pass
+- [x] 25. Checkpoint - Ensure all frontend tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 26. Scheduled jobs and real-time updates
-  - [~] 26.1 Implement Vercel Cron jobs for daily phase recalculation and summary regeneration
+- [x] 26. Scheduled jobs and real-time updates
+  - [x] 26.1 Implement Vercel Cron jobs for daily phase recalculation and summary regeneration
     - Midnight recalculation of current phase (per-user timezone bucketed)
     - Daily summary regeneration at midnight
     - Notification dispatch at configured delivery times
     - _Requirements: 8.3, 8.5, 15.4, 15.5, 17.6_
 
-  - [~] 26.2 Implement Supabase Realtime subscriptions for live dashboard updates
+  - [x] 26.2 Implement Supabase Realtime subscriptions for live dashboard updates
     - Push sharing preference changes to partner dashboard within 5 seconds
     - Push cycle data updates to partner dashboard
     - Fallback to 30-second polling when Realtime unavailable
