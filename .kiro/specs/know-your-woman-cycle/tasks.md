@@ -247,8 +247,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 23: Phase Content Structure Completeness**
     - **Validates: Requirements 13.1, 13.2, 13.3, 13.5, 13.7**
 
-- [ ] 11. GuidanceService - partner guidance and daily summaries
-  - [ ] 11.1 Implement GuidanceService generating contextual guidance content
+- [x] 11. GuidanceService - partner guidance and daily summaries
+  - [x] 11.1 Implement GuidanceService generating contextual guidance content
     - Generate 3-5 recommended supportive actions per phase
     - Generate 2-4 triggers to avoid per phase
     - Generate 2-4 communication strategies per phase
@@ -256,27 +256,27 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Apply survey calibration for personalization
     - _Requirements: 14.1, 14.2, 14.3, 14.4_
 
-  - [ ]* 11.2 Write property test for guidance content count bounds
+  - [x] 11.2 Write property test for guidance content count bounds
     - **Property 24: Guidance Content Count Bounds**
     - **Validates: Requirements 14.1, 14.2, 14.3, 14.4**
 
-  - [ ] 11.3 Implement Daily Summary generation
+  - [x] 11.3 Implement Daily Summary generation
     - Generate "Today's State" section (phase name, max 3 sentences)
     - Generate "Best Approach" section (1-3 items)
     - Generate "Avoid This" section (1-3 items)
     - Incorporate survey calibration for triggers and support style
     - _Requirements: 15.1, 15.2, 15.3_
 
-  - [ ]* 11.4 Write property test for daily summary structure
+  - [x] 11.4 Write property test for daily summary structure
     - **Property 25: Daily Summary Structure**
     - **Validates: Requirements 15.1, 15.2, 15.3**
 
-  - [ ] 11.5 Implement decision support layer (behavioral prompts and situational recommendations)
+  - [x] 11.5 Implement decision support layer (behavioral prompts and situational recommendations)
     - Generate 3-5 behavioral prompts per phase (max 280 chars, max 2 sentences each)
     - Generate 2-4 situational recommendations per phase
     - _Requirements: 16.1, 16.2, 16.3_
 
-  - [ ]* 11.6 Write property test for decision support content bounds
+  - [x] 11.6 Write property test for decision support content bounds
     - **Property 26: Decision Support Content Bounds**
     - **Validates: Requirements 16.1, 16.2, 16.3**
 
