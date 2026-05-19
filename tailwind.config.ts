@@ -9,6 +9,36 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      /* Design system: consistent font sizes with mobile-first approach */
+      fontSize: {
+        /* Body text: min 16px on mobile, min 14px on desktop */
+        'body-mobile': ['1rem', { lineHeight: '1.5' }], // 16px
+        'body-desktop': ['0.875rem', { lineHeight: '1.5' }], // 14px
+        /* Responsive body text utility */
+        body: ['1rem', { lineHeight: '1.5' }],
+      },
+      /* Line height: 1.5 base as per design system */
+      lineHeight: {
+        base: '1.5',
+      },
+      /* Spacing scale: uniform 4px increments */
+      spacing: {
+        'tap-target': '44px', // Minimum tap target size (WCAG)
+        'nav-height': '56px', // Mobile bottom nav height
+        'safe-bottom': 'env(safe-area-inset-bottom, 8px)',
+      },
+      /* Responsive max-widths for content containment */
+      maxWidth: {
+        content: '1280px',
+        'content-wide': '1536px',
+      },
+      /* Minimum heights for touch targets */
+      minHeight: {
+        'tap-target': '44px',
+      },
+      minWidth: {
+        'tap-target': '44px',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -51,6 +81,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+      },
+      /* Responsive screens */
+      screens: {
+        xs: '320px',
+        '3xl': '2560px',
       },
     },
   },

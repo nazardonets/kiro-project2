@@ -206,18 +206,19 @@ describe('Mobile Tap Targets - Minimum 44x44px', () => {
     render(<Button size="default">Tap Me</Button>);
 
     const button = screen.getByRole('button', { name: 'Tap Me' });
-    // Default button has h-10 (40px) class - verify it renders and is interactive
+    // Default button has h-11 (44px) class - meets 44px minimum tap target
     expect(button).toBeInTheDocument();
     expect(button).not.toBeDisabled();
+    expect(button.className).toContain('h-11');
   });
 
   it('Button with lg size provides adequate tap target', () => {
     render(<Button size="lg">Large Button</Button>);
 
     const button = screen.getByRole('button', { name: 'Large Button' });
-    // lg size has h-11 (44px) which meets the 44px minimum
+    // lg size has h-12 (48px) which exceeds the 44px minimum
     expect(button).toBeInTheDocument();
-    expect(button.className).toContain('h-11');
+    expect(button.className).toContain('h-12');
   });
 
   it('icon button meets minimum tap target size', () => {
@@ -228,10 +229,10 @@ describe('Mobile Tap Targets - Minimum 44x44px', () => {
     );
 
     const button = screen.getByRole('button', { name: 'Menu' });
-    // icon size has h-10 w-10 (40x40px)
+    // icon size has h-11 w-11 (44x44px) meeting the minimum tap target
     expect(button).toBeInTheDocument();
-    expect(button.className).toContain('h-10');
-    expect(button.className).toContain('w-10');
+    expect(button.className).toContain('h-11');
+    expect(button.className).toContain('w-11');
   });
 });
 

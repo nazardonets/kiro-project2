@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 
 import './globals.css';
@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description: 'Understand and support your partner throughout her menstrual cycle',
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,7 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn('font-sans', inter.variable)}>
-      <body className="antialiased">{children}</body>
+      <body className="min-h-screen w-full max-w-[100vw] overflow-x-hidden antialiased">
+        {children}
+      </body>
     </html>
   );
 }

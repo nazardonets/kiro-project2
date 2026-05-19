@@ -541,8 +541,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Visual indicator for overridden content
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
 
-- [ ] 24. Responsive design and accessibility
-  - [~] 24.1 Implement responsive layout and design system compliance
+- [x] 24. Responsive design and accessibility
+  - [x] 24.1 Implement responsive layout and design system compliance
     - Consistent design system (16px base font, 1.5 line-height, spacing, color palette)
     - Responsive layout 320px-2560px without horizontal scrolling
     - Mobile-optimized layout below 768px (44x44px tap targets)
@@ -552,7 +552,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Keyboard operability without hover dependency
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.7, 4.8_
 
-  - [ ]* 24.2 Write unit tests for responsive breakpoints and accessibility
+  - [x] 24.2 Write unit tests for responsive breakpoints and accessibility
     - Test layout rendering at key breakpoints (320px, 768px, 1024px, 2560px)
     - Test tap target sizes on mobile
     - Test keyboard navigation
