@@ -333,8 +333,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 30: Reminder Rate Limit**
     - **Validates: Requirements 18.4**
 
-- [ ] 15. Date Request feature
-  - [~] 15.1 Implement Date Request submission and email formatting
+- [x] 15. Date Request feature
+  - [x] 15.1 Implement Date Request submission and email formatting
     - Allow optional fields: location (max 200 chars), mood (max 200 chars), timing (specific date or window), personal notes (max 500 chars)
     - Format email with labeled sections for each specified field
     - Include phase-context section with current cycle phase tendencies
@@ -342,7 +342,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Handle case where no partner is linked or sharing is revoked
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.10_
 
-  - [ ]* 15.2 Write property test for date request email structure
+  - [x] 15.2 Write property test for date request email structure
     - **Property 22: Date Request Email Structure**
     - **Validates: Requirements 11.7**
 
