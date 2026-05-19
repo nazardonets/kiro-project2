@@ -137,29 +137,29 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 16: Cycle Overlap Conflict Detection**
     - **Validates: Requirements 7.5**
 
-- [ ] 6. Authentication and invite system
-  - [ ] 6.1 Implement Supabase Auth integration with registration and login
+- [x] 6. Authentication and invite system
+  - [x] 6.1 Implement Supabase Auth integration with registration and login
     - Primary_User registration with email and validated password
     - Partner_User registration via invite acceptance
     - Session management with Edge Middleware
     - _Requirements: 1.1, 1.3, 1.6_
 
-  - [ ] 6.2 Implement Secure Invite generation and acceptance
+  - [x] 6.2 Implement Secure Invite generation and acceptance
     - Generate unique token with 72-hour expiry (expires_at = created_at + 72h)
     - Validate invite on acceptance (not expired, not already used)
     - Create Partner_User account and PartnerLink on acceptance
     - Enforce one active partner link per Primary_User
     - _Requirements: 1.2, 1.4, 1.5_
 
-  - [ ]* 6.3 Write property test for secure invite expiry
+  - [x] 6.3 Write property test for secure invite expiry
     - **Property 2: Secure Invite Expiry**
     - **Validates: Requirements 1.2**
 
-  - [ ]* 6.4 Write property test for one active partner link invariant
+  - [x] 6.4 Write property test for one active partner link invariant
     - **Property 3: One Active Partner Link Invariant**
     - **Validates: Requirements 1.5**
 
-- [ ] 7. Checkpoint - Ensure core services and auth tests pass
+- [x] 7. Checkpoint - Ensure core services and auth tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. SharingService and access control
