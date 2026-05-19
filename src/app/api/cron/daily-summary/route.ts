@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
         const summaryContent =
           surveyResponses && surveyResponses.length > 0
             ? guidanceService.generateCalibratedDailySummary(phaseResult.phase, surveyResponses)
-            : guidanceService.generateBaseDailySummary(phaseResult.phase);
+            : guidanceService.generateDailySummary(phaseResult.phase);
 
         // Check if a summary already exists for today
         const { data: existingSummary } = await supabase

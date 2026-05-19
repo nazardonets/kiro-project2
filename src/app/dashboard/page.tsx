@@ -99,12 +99,7 @@ export default function DashboardPage() {
   }, []);
 
   const fetchInsights = useCallback(async (): Promise<InsightsData | null> => {
-    const response = await fetch('/api/partner/insights');
-    // The insights endpoint is for partners, so for primary user we generate locally
-    // Instead, we'll use the phase data to generate insights client-side
-    // Actually, looking at the API structure, the primary user doesn't have a dedicated
-    // insights endpoint. We'll use the InsightsService data from the phase endpoint.
-    // For now, let's try the partner insights endpoint and handle gracefully if it fails.
+    const response = await fetch('/api/cycle/insights');
     if (!response.ok) {
       return null;
     }
@@ -127,15 +122,12 @@ export default function DashboardPage() {
       setPhaseData(phase);
 
       // Check if phase changed — if so, refresh all data
-      const phaseChanged = previousPhaseRef.current !== null
-        && previousPhaseRef.current !== phase.phase;
+      const phaseChanged =
+        previousPhaseRef.current !== null && previousPhaseRef.current !== phase.phase;
       previousPhaseRef.current = phase.phase;
 
       // Fetch predictions and insights in parallel
-      const [predictions, insights] = await Promise.all([
-        fetchPredictions(),
-        fetchInsights(),
-      ]);
+      const [predictions, insights] = await Promise.all([fetchPredictions(), fetchInsights()]);
 
       if (predictions) {
         setPredictionsData(predictions);
@@ -233,9 +225,7 @@ export default function DashboardPage() {
         />
       )}
 
-      {phaseData && !insightsData && (
-        <InsightsDisplayFromPhase phase={phaseData.phase} />
-      )}
+      {phaseData && !insightsData && <InsightsDisplayFromPhase phase={phaseData.phase} />}
 
       {phaseData && <SelfCareDisplay phase={phaseData.phase} />}
 

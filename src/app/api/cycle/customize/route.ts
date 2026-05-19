@@ -5,6 +5,83 @@ import { UserRole } from '@/lib/types';
 import { phaseCustomizationSchema, validatePhaseDurations } from '@/lib/validation';
 import { AuthService } from '@/services/auth-service';
 
+/**
+ * GET /api/cycle/customize
+ *
+ * Retrieve the Primary_User's current phase customization settings.
+ *
+ * Validates: Requirements 9.1, 9.5
+ */
+export async function GET() {
+  try {
+    const supabase = createServerSupabaseClient();
+
+    // Verify authentication and role
+    const authService = new AuthService(supabase);
+    const contextResult = await authService.getUserContext();
+
+    if (!contextResult.success || !contextResult.data) {
+      return NextResponse.json(
+        {
+          code: 'UNAUTHENTICATED',
+          message: 'You must be logged in to view phase customization.',
+        },
+        { status: 401 },
+      );
+    }
+
+    if (contextResult.data.role !== UserRole.PRIMARY) {
+      return NextResponse.json(
+        {
+          code: 'FORBIDDEN',
+          message: 'Only Primary_Users can access phase customization.',
+        },
+        { status: 403 },
+      );
+    }
+
+    const userId = contextResult.data.userId;
+
+    const { data: customization } = await supabase
+      .from('phase_customization')
+      .select('*')
+      .eq('primary_user_id', userId)
+      .single();
+
+    if (!customization) {
+      // Return defaults when no customization exists
+      return NextResponse.json(
+        {
+          customization: null,
+          defaults: {
+            menstrual_days: 5,
+            follicular_days: 8,
+            ovulation_days: 1,
+            early_luteal_days: 7,
+            late_luteal_days: 7,
+          },
+        },
+        { status: 200 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        customization,
+      },
+      { status: 200 },
+    );
+  } catch {
+    return NextResponse.json(
+      {
+        code: 'INTERNAL_ERROR',
+        message: 'Something went wrong. Please try again.',
+      },
+      { status: 500 },
+    );
+  }
+}
+
 export async function PUT(request: Request) {
   try {
     const supabase = createServerSupabaseClient();

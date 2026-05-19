@@ -574,14 +574,14 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Fallback to 30-second polling when Realtime unavailable
     - _Requirements: 2.3, 3.4, 12.6_
 
-- [ ] 27. Edge Middleware and error handling
-  - [~] 27.1 Implement Edge Middleware for auth validation and role-based routing
+- [x] 27. Edge Middleware and error handling
+  - [x] 27.1 Implement Edge Middleware for auth validation and role-based routing
     - Validate session token on every request
     - Attach user context (role, linked partner ID, sharing permissions)
     - Route protection based on user role (primary, partner, admin)
     - _Requirements: 2.1, 5.1_
 
-  - [~] 27.2 Implement consistent error handling across all API routes
+  - [x] 27.2 Implement consistent error handling across all API routes
     - Validation errors with field-specific messages (ValidationError shape)
     - Authentication errors with redirect to login
     - Authorization errors with role-appropriate 403 messages
@@ -590,8 +590,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Generic 500 for database errors with logging
     - _Requirements: 1.7, 2.2, 7.5_
 
-- [ ] 28. Integration wiring and final assembly
-  - [~] 28.1 Wire all services, API routes, and UI components together
+- [x] 28. Integration wiring and final assembly
+  - [x] 28.1 Wire all services, API routes, and UI components together
     - Ensure all API routes connect to correct services
     - Ensure all UI components fetch from correct API endpoints
     - Ensure Realtime subscriptions are connected
@@ -599,7 +599,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Verify end-to-end data flow from input to partner dashboard
     - _Requirements: All_
 
-  - [ ]* 28.2 Write integration tests for critical user flows
+  - [x] 28.2 Write integration tests for critical user flows
     - Auth flow: register → invite → accept → linked accounts
     - Cycle flow: input date → phase calculation → predictions → partner view
     - Sharing flow: toggle category → partner dashboard updates within 5 seconds

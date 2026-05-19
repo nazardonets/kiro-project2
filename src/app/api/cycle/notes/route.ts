@@ -5,6 +5,75 @@ import { UserRole } from '@/lib/types';
 import { personalNoteSchema } from '@/lib/validation';
 import { AuthService } from '@/services/auth-service';
 
+/**
+ * GET /api/cycle/notes
+ *
+ * Retrieve all personal notes for the Primary_User.
+ *
+ * Validates: Requirements 9.4, 9.5
+ */
+export async function GET() {
+  try {
+    const supabase = createServerSupabaseClient();
+
+    // Verify authentication and role
+    const authService = new AuthService(supabase);
+    const contextResult = await authService.getUserContext();
+
+    if (!contextResult.success || !contextResult.data) {
+      return NextResponse.json(
+        {
+          code: 'UNAUTHENTICATED',
+          message: 'You must be logged in to view personal notes.',
+        },
+        { status: 401 },
+      );
+    }
+
+    if (contextResult.data.role !== UserRole.PRIMARY) {
+      return NextResponse.json(
+        {
+          code: 'FORBIDDEN',
+          message: 'Only Primary_Users can access personal notes.',
+        },
+        { status: 403 },
+      );
+    }
+
+    const userId = contextResult.data.userId;
+
+    const { data: notes, error } = await supabase
+      .from('personal_note')
+      .select('*')
+      .eq('primary_user_id', userId);
+
+    if (error) {
+      return NextResponse.json(
+        {
+          code: 'INTERNAL_ERROR',
+          message: 'Failed to retrieve personal notes.',
+        },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        notes: notes ?? [],
+      },
+      { status: 200 },
+    );
+  } catch {
+    return NextResponse.json(
+      {
+        code: 'INTERNAL_ERROR',
+        message: 'Something went wrong. Please try again.',
+      },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const supabase = createServerSupabaseClient();
