@@ -600,6 +600,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - _Requirements: All_
 
   - [x] 28.2 Write integration tests for critical user flows
+
+  - [x] 28.2 Write integration tests for critical user flows
     - Auth flow: register → invite → accept → linked accounts
     - Cycle flow: input date → phase calculation → predictions → partner view
     - Sharing flow: toggle category → partner dashboard updates within 5 seconds
@@ -607,8 +609,32 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Admin flow: search → suspend → cascade to partner
     - _Requirements: 1.1-1.7, 2.1-2.6, 3.1-3.5, 7.1-7.5, 8.1-8.6_
 
-- [~] 29. Final checkpoint - Ensure all tests pass
+- [x] 29. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 30. Email confirmation support
+  - [x] 30.1 Update AuthService to handle Supabase email confirmation flow
+    - Detect when signUp returns a user with empty identities or null confirmed_at
+    - Return success with needsEmailConfirmation flag instead of failing
+    - Apply to both Primary_User and Partner_User registration
+    - _Requirements: 1.8, 1.9_
+
+  - [x] 30.2 Update registration API route to return confirmation status
+    - Include needsEmailConfirmation boolean in 201 response
+    - Return appropriate message based on confirmation state
+    - _Requirements: 1.8, 1.11_
+
+  - [x] 30.3 Update registration page UI to show email confirmation message
+    - Display "Check Your Email" card when needsEmailConfirmation is true
+    - Show instructions to check inbox and spam folder
+    - Provide link to login page for after confirmation
+    - _Requirements: 1.11_
+
+  - [x] 30.4 Create auth callback route for email confirmation redirect
+    - Handle GET /auth/callback with code parameter
+    - Exchange code for session via supabase.auth.exchangeCodeForSession
+    - Redirect to /onboarding on success, /auth/login on failure
+    - _Requirements: 1.9, 1.10_
 
 ## Notes
 

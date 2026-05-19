@@ -62,6 +62,17 @@ graph TB
 4. **Supabase Realtime** pushes updates to the Partner_User's dashboard when sharing permissions or cycle data change (meeting the 5-second update requirement).
 5. **Cron Jobs** run at midnight (per-user timezone bucketed) to recalculate phases, regenerate daily summaries, and dispatch email notifications.
 
+### Email Confirmation Flow
+
+Registration uses Supabase Auth's built-in email confirmation. The flow is:
+
+1. User submits registration form → API calls `supabase.auth.signUp()` → Supabase sends confirmation email
+2. API returns `201` with `needsEmailConfirmation: true` → Frontend shows "Check your email" message
+3. User clicks confirmation link → Supabase redirects to `/auth/callback?code=...`
+4. Callback route calls `supabase.auth.exchangeCodeForSession(code)` → establishes session → redirects to `/onboarding`
+
+If email confirmation is disabled in the Supabase project settings, the flow skips steps 2-3 and redirects directly to `/onboarding` after registration.
+
 ### Deployment Architecture
 
 ```mermaid
@@ -99,6 +110,7 @@ graph LR
 | `/api/auth/register` | POST | Create Primary_User account |
 | `/api/auth/invite` | POST | Generate Secure_Invite |
 | `/api/auth/accept-invite` | POST | Accept invite, create Partner_User |
+| `/auth/callback` | GET | Handle email confirmation redirect, exchange code for session |
 | `/api/cycle/start-date` | POST | Submit cycle start date |
 | `/api/cycle/history` | GET | Retrieve cycle history |
 | `/api/cycle/phase` | GET | Get current phase calculation |

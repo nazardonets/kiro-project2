@@ -50,6 +50,10 @@ Know Your Woman Cycle is a web application designed to help a male partner bette
 5. THE System SHALL restrict each Primary_User account to one linked Partner_User account at a time
 6. IF the Primary_User or Partner_User attempts to create an account with an email address already associated with an existing account, THEN THE System SHALL reject the registration and display a message indicating the email is already in use
 7. IF the Primary_User submits a password that does not meet the minimum requirements during account creation, THEN THE System SHALL reject the submission and display a message indicating which password requirements are not satisfied
+8. WHEN the Primary_User or Partner_User successfully submits a registration form, THE System SHALL send a confirmation email to the provided email address containing a unique confirmation link
+9. WHEN the user clicks the confirmation link in the email, THE System SHALL verify the confirmation token, activate the account, establish an authenticated session, and redirect the user to the onboarding flow
+10. IF the confirmation link is invalid or expired, THEN THE System SHALL redirect the user to the login page with a message indicating the confirmation failed
+11. WHILE the user has not confirmed their email, THE System SHALL display a message on the registration page instructing the user to check their inbox for the confirmation email
 
 ### Requirement 2: Data Privacy and Access Control
 

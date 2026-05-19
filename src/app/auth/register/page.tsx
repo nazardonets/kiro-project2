@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [passwordErrors, setPasswordErrors] = useState<FieldError[]>([]);
   const [generalError, setGeneralError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
 
   function validateEmail(value: string): FieldError[] {
     const errors: FieldError[] = [];
@@ -94,6 +95,11 @@ export default function RegisterPage() {
         return;
       }
 
+      if (data.needsEmailConfirmation) {
+        setShowConfirmationMessage(true);
+        return;
+      }
+
       router.push('/onboarding');
     } catch {
       setGeneralError('Something went wrong. Please try again.');
@@ -105,89 +111,110 @@ export default function RegisterPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle>Create Account</CardTitle>
-        <CardDescription>Sign up to start tracking and sharing your cycle insights</CardDescription>
+        <CardTitle>{showConfirmationMessage ? 'Check Your Email' : 'Create Account'}</CardTitle>
+        <CardDescription>
+          {showConfirmationMessage
+            ? `We've sent a confirmation link to ${email}. Please check your inbox and click the link to activate your account.`
+            : 'Sign up to start tracking and sharing your cycle insights'}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          {generalError && (
-            <div role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {generalError}
+        {showConfirmationMessage ? (
+          <div className="space-y-4 text-center">
+            <div className="rounded-md bg-primary/10 p-4 text-sm text-primary">
+              Didn&apos;t receive the email? Check your spam folder or try registering again.
             </div>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (emailErrors.length > 0) {
-                  setEmailErrors(validateEmail(e.target.value));
-                }
-              }}
-              onBlur={handleEmailBlur}
-              aria-invalid={emailErrors.length > 0}
-              aria-describedby={emailErrors.length > 0 ? 'email-errors' : undefined}
-              disabled={isLoading}
-            />
-            {emailErrors.length > 0 && (
-              <div id="email-errors" className="space-y-1">
-                {emailErrors.map((err) => (
-                  <p key={err.constraint} className="text-sm text-destructive">
-                    {err.message}
-                  </p>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (passwordErrors.length > 0) {
-                  setPasswordErrors(validatePasswordField(e.target.value));
-                }
-              }}
-              onBlur={handlePasswordBlur}
-              aria-invalid={passwordErrors.length > 0}
-              aria-describedby={passwordErrors.length > 0 ? 'password-errors' : undefined}
-              disabled={isLoading}
-            />
-            {passwordErrors.length > 0 && (
-              <div id="password-errors" className="space-y-1">
-                {passwordErrors.map((err) => (
-                  <p key={err.constraint} className="text-sm text-destructive">
-                    {err.message}
-                  </p>
-                ))}
-              </div>
-            )}
-            <p className="text-xs text-muted-foreground">
-              8-128 characters, at least one uppercase, one lowercase, and one digit
+            <p className="text-sm text-muted-foreground">
+              Once confirmed, you can{' '}
+              <Link href="/auth/login" className="text-primary underline hover:no-underline">
+                log in here
+              </Link>
             </p>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            {generalError && (
+              <div
+                role="alert"
+                className="rounded-md bg-destructive/10 p-3 text-sm text-destructive"
+              >
+                {generalError}
+              </div>
+            )}
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Creating account...' : 'Create Account'}
-          </Button>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (emailErrors.length > 0) {
+                    setEmailErrors(validateEmail(e.target.value));
+                  }
+                }}
+                onBlur={handleEmailBlur}
+                aria-invalid={emailErrors.length > 0}
+                aria-describedby={emailErrors.length > 0 ? 'email-errors' : undefined}
+                disabled={isLoading}
+              />
+              {emailErrors.length > 0 && (
+                <div id="email-errors" className="space-y-1">
+                  {emailErrors.map((err) => (
+                    <p key={err.constraint} className="text-sm text-destructive">
+                      {err.message}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
 
-          <p className="text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link href="/auth/login" className="text-primary underline hover:no-underline">
-              Log in
-            </Link>
-          </p>
-        </form>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordErrors.length > 0) {
+                    setPasswordErrors(validatePasswordField(e.target.value));
+                  }
+                }}
+                onBlur={handlePasswordBlur}
+                aria-invalid={passwordErrors.length > 0}
+                aria-describedby={passwordErrors.length > 0 ? 'password-errors' : undefined}
+                disabled={isLoading}
+              />
+              {passwordErrors.length > 0 && (
+                <div id="password-errors" className="space-y-1">
+                  {passwordErrors.map((err) => (
+                    <p key={err.constraint} className="text-sm text-destructive">
+                      {err.message}
+                    </p>
+                  ))}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                8-128 characters, at least one uppercase, one lowercase, and one digit
+              </p>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Creating account...' : 'Create Account'}
+            </Button>
+
+            <p className="text-center text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/auth/login" className="text-primary underline hover:no-underline">
+                Log in
+              </Link>
+            </p>
+          </form>
+        )}
       </CardContent>
     </Card>
   );

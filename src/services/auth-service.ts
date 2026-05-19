@@ -17,6 +17,7 @@ export interface RegisterResult {
   userId: string;
   email: string;
   role: UserRole;
+  needsEmailConfirmation?: boolean;
 }
 
 export interface LoginResult {
@@ -109,12 +110,18 @@ export class AuthService {
       };
     }
 
+    // When email confirmation is enabled, Supabase returns the user
+    // but with empty identities until they confirm their email
+    const needsEmailConfirmation =
+      data.user.identities?.length === 0 || data.user.confirmed_at === null;
+
     return {
       success: true,
       data: {
         userId: data.user.id,
         email: data.user.email ?? email,
         role: UserRole.PRIMARY,
+        needsEmailConfirmation,
       },
     };
   }
@@ -229,6 +236,14 @@ export class AuthService {
       };
     }
 
+    // When email confirmation is enabled, Supabase returns the user
+    // but with empty identities until they confirm their email
+    const needsEmailConfirmation =
+      authData.user.identities?.length === 0 || authData.user.confirmed_at === null;
+
+    // If email confirmation is required, we still create the partner link
+    // so it's ready when they confirm. The link won't be usable until they log in.
+
     // Create the partner link
     const { error: linkError } = await this.supabase.from('partner_link').insert({
       primary_user_id: invite.primary_user_id,
@@ -260,6 +275,7 @@ export class AuthService {
         userId: authData.user.id,
         email: authData.user.email ?? email,
         role: UserRole.PARTNER,
+        needsEmailConfirmation,
       },
     };
   }
