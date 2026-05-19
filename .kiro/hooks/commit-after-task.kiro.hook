@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Offer Commit After Task",
+  "description": "After a spec task is completed, offer to commit the changes to git.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A task has just been completed. Offer the user to commit the changes by summarizing what was done and suggesting a concise commit message. Ask if they'd like you to stage and commit the changes."
+  }
+}

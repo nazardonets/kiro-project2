@@ -162,60 +162,60 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
 - [x] 7. Checkpoint - Ensure core services and auth tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. SharingService and access control
-  - [ ] 8.1 Implement SharingService with category toggles and notification type toggles
+- [x] 8. SharingService and access control
+  - [x] 8.1 Implement SharingService with category toggles and notification type toggles
     - Toggle individual insight categories independently
     - Toggle notification types independently (daily summaries, phase alerts, partner reminders)
     - Default all categories and notifications to enabled on partner linking
     - Propagate changes via Supabase Realtime within 5 seconds
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ]* 8.2 Write property test for independent sharing toggle
+  - [x] 8.2 Write property test for independent sharing toggle
     - **Property 7: Independent Sharing Toggle**
     - **Validates: Requirements 3.1, 3.3**
 
-  - [ ]* 8.3 Write property test for sharing category round trip
+  - [x] 8.3 Write property test for sharing category round trip
     - **Property 8: Sharing Category Round Trip**
     - **Validates: Requirements 3.2**
 
-  - [ ] 8.4 Implement data access control enforcement
+  - [x] 8.4 Implement data access control enforcement
     - Block Partner_User from modifying any Cycle_Data
     - Enforce RLS policies for cycle data ownership
     - Return appropriate error messages for unauthorized access attempts
     - _Requirements: 2.1, 2.2_
 
-  - [ ]* 8.5 Write property test for cycle data access control
+  - [x] 8.5 Write property test for cycle data access control
     - **Property 4: Cycle Data Access Control**
     - **Validates: Requirements 2.1, 2.2**
 
-  - [ ] 8.6 Implement account deletion with cascade cleanup
+  - [x] 8.6 Implement account deletion with cascade cleanup
     - Delete all associated records (CycleRecords, PersonalNotes, SurveyResponses, SharingPreferences, DailySummaries, DateRequests)
     - Deactivate linked Partner_User access
     - Require explicit confirmation step
     - _Requirements: 2.4, 2.5_
 
-  - [ ]* 8.7 Write property test for account deletion cascade
+  - [x] 8.7 Write property test for account deletion cascade
     - **Property 5: Account Deletion Cascade**
     - **Validates: Requirements 2.5, 5.8**
 
-  - [ ] 8.8 Implement partner unlinking (preserves primary data, revokes partner access)
+  - [x] 8.8 Implement partner unlinking (preserves primary data, revokes partner access)
     - Remove Partner_User access to Insights_Dashboard and Guidance_Panel
     - Preserve all Primary_User data unchanged
     - Update PartnerLink status to 'unlinked'
     - _Requirements: 2.6_
 
-  - [ ]* 8.9 Write property test for unlink preserves primary data
+  - [x] 8.9 Write property test for unlink preserves primary data
     - **Property 6: Unlink Preserves Primary Data**
     - **Validates: Requirements 2.6**
 
-- [ ] 9. SurveyService - onboarding survey and calibration
-  - [ ] 9.1 Implement SurveyService with survey storage and response management
+- [x] 9. SurveyService - onboarding survey and calibration
+  - [x] 9.1 Implement SurveyService with survey storage and response management
     - Store responses for all 6 questions
     - Support updating responses at any time
     - Trigger recalibration within 60 seconds of update
     - _Requirements: 20.1, 20.9, 20.17, 20.18_
 
-  - [ ] 9.2 Implement survey calibration engine
+  - [x] 9.2 Implement survey calibration engine
     - Q1 → confidence level (high/low confidence framing)
     - Q2 → emotional emphasis (reduced/heightened)
     - Q3 → social energy recommendations (give space/engage more)
@@ -224,11 +224,11 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Q6 → communication approach (check-in frequency, conversation depth)
     - _Requirements: 20.10, 20.11, 20.12, 20.13, 20.14, 20.15, 20.16_
 
-  - [ ]* 9.3 Write property test for survey calibration correctness
+  - [x] 9.3 Write property test for survey calibration correctness
     - **Property 33: Survey Calibration Correctness**
     - **Validates: Requirements 20.10, 20.11, 20.12, 20.13, 20.14, 20.15, 20.16**
 
-  - [ ]* 9.4 Write property test for survey response privacy
+  - [x] 9.4 Write property test for survey response privacy
     - **Property 34: Survey Response Privacy**
     - **Validates: Requirements 20.20**
 
