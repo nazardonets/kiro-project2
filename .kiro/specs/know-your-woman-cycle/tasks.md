@@ -232,8 +232,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 34: Survey Response Privacy**
     - **Validates: Requirements 20.20**
 
-- [ ] 10. InsightsService - phase-based content generation
-  - [ ] 10.1 Implement InsightsService generating phase-based insights content
+- [x] 10. InsightsService - phase-based content generation
+  - [x] 10.1 Implement InsightsService generating phase-based insights content
     - Generate emotional tendencies (at least 3 per phase)
     - Generate cognitive tendencies (at least 2 per phase)
     - Generate behavioral tendencies (at least 2 per phase)
@@ -243,7 +243,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Apply survey calibration modifiers
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.7, 13.8_
 
-  - [ ]* 10.2 Write property test for phase content structure completeness
+  - [x] 10.2 Write property test for phase content structure completeness
     - **Property 23: Phase Content Structure Completeness**
     - **Validates: Requirements 13.1, 13.2, 13.3, 13.5, 13.7**
 
