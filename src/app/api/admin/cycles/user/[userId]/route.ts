@@ -5,7 +5,7 @@ import { UserRole } from '@/lib/types';
 import { AuthService } from '@/services/auth-service';
 
 /**
- * GET /api/admin/cycles/:userId - List all cycle instances for a user.
+ * GET /api/admin/cycles/user/:userId - List all cycle instances for a user.
  * Returns cycle records ordered by start_date descending (most recent first).
  */
 export async function GET(_request: NextRequest, { params }: { params: { userId: string } }) {
