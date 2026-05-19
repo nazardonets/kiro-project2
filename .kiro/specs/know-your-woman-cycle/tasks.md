@@ -524,8 +524,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Timezone selection
     - _Requirements: 17.5, 17.10, 18.2, 18.3_
 
-- [ ] 23. Frontend - Admin Panel
-  - [~] 23.1 Implement Admin Panel with user management
+- [x] 23. Frontend - Admin Panel
+  - [x] 23.1 Implement Admin Panel with user management
     - Admin authentication gate
     - User search by email or ID (max 50 results)
     - Account details view (status, creation date, partner link)
@@ -533,7 +533,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Manual link/unlink partner accounts
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
 
-  - [~] 23.2 Implement Admin cycle instance management UI
+  - [x] 23.2 Implement Admin cycle instance management UI
     - Display cycle instances ordered by start_date descending
     - View cycle details (start date, phases, predictions)
     - Add/edit/delete annotations (1-2000 chars)
