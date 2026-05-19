@@ -346,8 +346,8 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 22: Date Request Email Structure**
     - **Validates: Requirements 11.7**
 
-- [ ] 16. AdminService - user management and cycle instance management
-  - [~] 16.1 Implement AdminService with user search, suspension, and deletion
+- [x] 16. AdminService - user management and cycle instance management
+  - [x] 16.1 Implement AdminService with user search, suspension, and deletion
     - Search by email or account ID, max 50 results per query
     - View account details (status, creation date, partner link status)
     - Suspend accounts with recorded reason (1-500 chars)
@@ -355,19 +355,19 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Revoke access within 30 seconds of suspension, notify via email
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
 
-  - [ ]* 16.2 Write property test for admin search result limit
+  - [x] 16.2 Write property test for admin search result limit
     - **Property 9: Admin Search Result Limit**
     - **Validates: Requirements 5.2**
 
-  - [~] 16.3 Implement primary suspension cascading to partner access revocation
+  - [x] 16.3 Implement primary suspension cascading to partner access revocation
     - When Primary_User is suspended, revoke linked Partner_User's access to Insights_Dashboard and Guidance_Panel
     - _Requirements: 5.9_
 
-  - [ ]* 16.4 Write property test for primary suspension cascades to partner
+  - [x] 16.4 Write property test for primary suspension cascades to partner
     - **Property 10: Primary Suspension Cascades to Partner**
     - **Validates: Requirements 5.9**
 
-  - [~] 16.5 Implement admin cycle instance management (view, annotate, override)
+  - [x] 16.5 Implement admin cycle instance management (view, annotate, override)
     - Display cycle instances ordered by start_date descending (most recent first)
     - Add/edit/delete annotations (1-2000 chars) to cycle instances or phases
     - Override system-generated content with replacement text (1-2000 chars)
@@ -375,30 +375,30 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Preserve original user-provided data unmodified
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
 
-  - [ ]* 16.6 Write property test for cycle instance ordering
+  - [x] 16.6 Write property test for cycle instance ordering
     - **Property 11: Cycle Instance Ordering**
     - **Validates: Requirements 6.1**
 
-  - [ ]* 16.7 Write property test for admin annotations preserve original data
+  - [x] 16.7 Write property test for admin annotations preserve original data
     - **Property 12: Admin Annotations Preserve Original Data**
     - **Validates: Requirements 6.7**
 
-  - [ ]* 16.8 Write property test for admin override revert round trip
+  - [x] 16.8 Write property test for admin override revert round trip
     - **Property 13: Admin Override Revert Round Trip**
     - **Validates: Requirements 6.9**
 
-- [~] 17. Checkpoint - Ensure all service and business logic tests pass
+- [ ] 17. Checkpoint - Ensure all service and business logic tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 18. API routes - authentication and cycle management
-  - [~] 18.1 Implement auth API routes (register, invite, accept-invite)
+  - [ ] 18.1 Implement auth API routes (register, invite, accept-invite)
     - POST /api/auth/register - create Primary_User account
     - POST /api/auth/invite - generate Secure_Invite
     - POST /api/auth/accept-invite - accept invite, create Partner_User
     - Wire to AuthService and validation layer
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
 
-  - [~] 18.2 Implement cycle API routes (start-date, history, phase, predictions, customize, notes)
+  - [ ] 18.2 Implement cycle API routes (start-date, history, phase, predictions, customize, notes)
     - POST /api/cycle/start-date - submit cycle start date
     - GET /api/cycle/history - retrieve cycle history
     - GET /api/cycle/phase - get current phase calculation
@@ -408,7 +408,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Wire to CycleService, PhaseEngine, validation layer
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.4, 9.1, 9.2, 9.3, 9.4_
 
-  - [~] 18.3 Implement sharing API routes (categories, notifications, revoke, unlink)
+  - [ ] 18.3 Implement sharing API routes (categories, notifications, revoke, unlink)
     - PUT /api/sharing/categories - toggle insight categories
     - PUT /api/sharing/notifications - toggle notification types
     - POST /api/sharing/revoke - revoke all sharing
@@ -416,7 +416,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Wire to SharingService
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 2.3, 2.6_
 
-  - [~] 18.4 Implement partner API routes (insights, guidance, daily-summary, notifications, reminders)
+  - [ ] 18.4 Implement partner API routes (insights, guidance, daily-summary, notifications, reminders)
     - GET /api/partner/insights - get shared insights
     - GET /api/partner/guidance - get guidance panel content
     - GET /api/partner/daily-summary - get daily summary
@@ -425,14 +425,14 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Wire to InsightsService, GuidanceService, NotificationService
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 14.1, 15.6, 17.5, 18.2, 18.3_
 
-  - [~] 18.5 Implement survey and date request API routes
+  - [ ] 18.5 Implement survey and date request API routes
     - POST /api/survey/submit - submit onboarding survey
     - PUT /api/survey/update - update survey responses
     - POST /api/date-request - submit date request
     - Wire to SurveyService, DateRequest handling
     - _Requirements: 20.1, 20.8, 20.9, 20.17, 20.18, 11.1, 11.6_
 
-  - [~] 18.6 Implement admin API routes (users, cycles, annotations, overrides)
+  - [ ] 18.6 Implement admin API routes (users, cycles, annotations, overrides)
     - GET /api/admin/users - search users
     - GET/PUT/DELETE /api/admin/users/:id - manage user account
     - POST /api/admin/users/:id/suspend - suspend account
@@ -442,18 +442,18 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Wire to AdminService
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
 
-- [~] 19. Checkpoint - Ensure all API route tests pass
+- [ ] 19. Checkpoint - Ensure all API route tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 20. Frontend - Auth pages and onboarding survey
-  - [~] 20.1 Implement auth pages (login, registration, invite acceptance)
+  - [ ] 20.1 Implement auth pages (login, registration, invite acceptance)
     - Registration form with email and password validation (inline errors)
     - Login form with session management
     - Invite acceptance page with token validation and registration
     - Expired invite handling with re-generation prompt
     - _Requirements: 1.1, 1.3, 1.4, 1.6, 1.7_
 
-  - [~] 20.2 Implement onboarding survey flow (6 questions)
+  - [ ] 20.2 Implement onboarding survey flow (6 questions)
     - Present all 6 questions with correct prompts and response options
     - Single-select for Q1, Q2, Q3, Q5, Q6; multi-select for Q4
     - Free-text field for Q4 "Other" option (max 200 chars)
@@ -462,7 +462,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9, 20.19_
 
 - [ ] 21. Frontend - Primary User Dashboard
-  - [~] 21.1 Implement Primary Dashboard with phase display, predictions, and insights
+  - [ ] 21.1 Implement Primary Dashboard with phase display, predictions, and insights
     - Display current phase name and day number within phase
     - Display 60-day predicted upcoming phases
     - Display emotional, cognitive, and behavioral tendencies for current phase
@@ -471,27 +471,27 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Empty state with prompt to input cycle start date
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-  - [~] 21.2 Implement cycle data input (date picker) and history view
+  - [ ] 21.2 Implement cycle data input (date picker) and history view
     - Date picker with selectable range [today - 365 days, today]
     - Confirmation message on successful save
     - Support up to 12 historical cycle start dates
     - Conflict warning for overlapping dates
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [~] 21.3 Implement phase customization UI and personal notes
+  - [ ] 21.3 Implement phase customization UI and personal notes
     - Phase duration adjustment (1-14 days per phase, must sum to cycle length)
     - Validation error display when sum doesn't match
     - Personal notes per phase (max 500 chars)
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-  - [~] 21.4 Implement sharing controls UI
+  - [ ] 21.4 Implement sharing controls UI
     - Toggle individual insight categories (emotional tendencies, behavioral patterns, energy levels, communication guidance)
     - Toggle notification types (daily summaries, phase alerts, partner reminders)
     - All enabled by default on partner linking
     - Real-time propagation within 5 seconds
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [~] 21.5 Implement Date Request form and submission
+  - [ ] 21.5 Implement Date Request form and submission
     - "Request a Date" action on Primary Dashboard
     - Optional fields: location, mood, timing (specific date or window), personal notes
     - Submit and send email to partner
@@ -500,7 +500,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.9, 11.10_
 
 - [ ] 22. Frontend - Partner Dashboard
-  - [~] 22.1 Implement Partner Insights Dashboard
+  - [ ] 22.1 Implement Partner Insights Dashboard
     - Display current cycle phase (when sharing active)
     - Display emotional tendencies, energy levels, behavioral patterns
     - Display personal notes when shared
@@ -510,14 +510,14 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Daily Summary as first visible section (no scrolling required)
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7, 13.6, 13.8, 15.6_
 
-  - [~] 22.2 Implement Guidance Panel for Partner
+  - [ ] 22.2 Implement Guidance Panel for Partner
     - Display 3-5 supportive actions, 2-4 triggers to avoid, 2-4 communication strategies, 2-4 discouraged patterns
     - Suggestion-oriented language ("consider", "you might try")
     - Update on phase change
     - Hide when communication guidance category is disabled
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8, 14.9_
 
-  - [~] 22.3 Implement Partner notification settings UI
+  - [ ] 22.3 Implement Partner notification settings UI
     - Configure frequency: daily, phase-based, custom timing
     - Configure delivery time: morning (6-9 AM) or evening (6-9 PM)
     - Enable/disable reminders with configurable time
@@ -525,7 +525,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - _Requirements: 17.5, 17.10, 18.2, 18.3_
 
 - [ ] 23. Frontend - Admin Panel
-  - [~] 23.1 Implement Admin Panel with user management
+  - [ ] 23.1 Implement Admin Panel with user management
     - Admin authentication gate
     - User search by email or ID (max 50 results)
     - Account details view (status, creation date, partner link)
@@ -533,7 +533,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Manual link/unlink partner accounts
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
 
-  - [~] 23.2 Implement Admin cycle instance management UI
+  - [ ] 23.2 Implement Admin cycle instance management UI
     - Display cycle instances ordered by start_date descending
     - View cycle details (start date, phases, predictions)
     - Add/edit/delete annotations (1-2000 chars)
@@ -542,7 +542,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
 
 - [ ] 24. Responsive design and accessibility
-  - [~] 24.1 Implement responsive layout and design system compliance
+  - [ ] 24.1 Implement responsive layout and design system compliance
     - Consistent design system (16px base font, 1.5 line-height, spacing, color palette)
     - Responsive layout 320px-2560px without horizontal scrolling
     - Mobile-optimized layout below 768px (44x44px tap targets)
@@ -558,30 +558,30 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Test keyboard navigation
     - _Requirements: 4.2, 4.3, 4.4_
 
-- [~] 25. Checkpoint - Ensure all frontend tests pass
+- [ ] 25. Checkpoint - Ensure all frontend tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 26. Scheduled jobs and real-time updates
-  - [~] 26.1 Implement Vercel Cron jobs for daily phase recalculation and summary regeneration
+  - [ ] 26.1 Implement Vercel Cron jobs for daily phase recalculation and summary regeneration
     - Midnight recalculation of current phase (per-user timezone bucketed)
     - Daily summary regeneration at midnight
     - Notification dispatch at configured delivery times
     - _Requirements: 8.3, 8.5, 15.4, 15.5, 17.6_
 
-  - [~] 26.2 Implement Supabase Realtime subscriptions for live dashboard updates
+  - [ ] 26.2 Implement Supabase Realtime subscriptions for live dashboard updates
     - Push sharing preference changes to partner dashboard within 5 seconds
     - Push cycle data updates to partner dashboard
     - Fallback to 30-second polling when Realtime unavailable
     - _Requirements: 2.3, 3.4, 12.6_
 
 - [ ] 27. Edge Middleware and error handling
-  - [~] 27.1 Implement Edge Middleware for auth validation and role-based routing
+  - [ ] 27.1 Implement Edge Middleware for auth validation and role-based routing
     - Validate session token on every request
     - Attach user context (role, linked partner ID, sharing permissions)
     - Route protection based on user role (primary, partner, admin)
     - _Requirements: 2.1, 5.1_
 
-  - [~] 27.2 Implement consistent error handling across all API routes
+  - [ ] 27.2 Implement consistent error handling across all API routes
     - Validation errors with field-specific messages (ValidationError shape)
     - Authentication errors with redirect to login
     - Authorization errors with role-appropriate 403 messages
@@ -591,7 +591,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - _Requirements: 1.7, 2.2, 7.5_
 
 - [ ] 28. Integration wiring and final assembly
-  - [~] 28.1 Wire all services, API routes, and UI components together
+  - [ ] 28.1 Wire all services, API routes, and UI components together
     - Ensure all API routes connect to correct services
     - Ensure all UI components fetch from correct API endpoints
     - Ensure Realtime subscriptions are connected
@@ -607,7 +607,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - Admin flow: search → suspend → cascade to partner
     - _Requirements: 1.1-1.7, 2.1-2.6, 3.1-3.5, 7.1-7.5, 8.1-8.6_
 
-- [~] 29. Final checkpoint - Ensure all tests pass
+- [ ] 29. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
@@ -620,37 +620,27 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
 - The tech stack is: Next.js 14 (App Router), TypeScript, Supabase (PostgreSQL + Auth + Realtime), Resend, Tailwind CSS + shadcn/ui, Zod, vitest, fast-check
 - All property-based tests use `fast-check` with minimum 100 iterations per property
 - Test tag format: `// Feature: know-your-woman-cycle, Property {N}: {title}`
+- Tasks 1-15 are complete (service layer, validation, property tests)
+- Remaining work focuses on: AdminService (16), API routes (18), Frontend (20-24), Scheduled jobs (26), Middleware (27), and Integration (28)
 
 ## Task Dependency Graph
 
 ```json
 {
   "waves": [
-    { "id": 0, "tasks": ["1.1"] },
-    { "id": 1, "tasks": ["1.2", "1.3", "1.4"] },
-    { "id": 2, "tasks": ["2.1", "2.3", "2.5", "2.7", "2.9"] },
-    { "id": 3, "tasks": ["2.2", "2.4", "2.6", "2.8", "2.10", "4.1"] },
-    { "id": 4, "tasks": ["4.2", "4.3", "4.5"] },
-    { "id": 5, "tasks": ["4.4", "4.6", "5.1", "6.1"] },
-    { "id": 6, "tasks": ["5.2", "5.3", "6.2"] },
-    { "id": 7, "tasks": ["6.3", "6.4", "8.1", "8.4"] },
-    { "id": 8, "tasks": ["8.2", "8.3", "8.5", "8.6", "8.8"] },
-    { "id": 9, "tasks": ["8.7", "8.9", "9.1"] },
-    { "id": 10, "tasks": ["9.2", "9.3", "9.4"] },
-    { "id": 11, "tasks": ["10.1", "11.1", "11.3", "11.5"] },
-    { "id": 12, "tasks": ["10.2", "11.2", "11.4", "11.6", "12.1"] },
-    { "id": 13, "tasks": ["12.2", "14.1", "14.3", "14.5"] },
-    { "id": 14, "tasks": ["14.2", "14.4", "14.6", "14.7", "15.1"] },
-    { "id": 15, "tasks": ["15.2", "16.1", "16.3", "16.5"] },
-    { "id": 16, "tasks": ["16.2", "16.4", "16.6", "16.7", "16.8"] },
-    { "id": 17, "tasks": ["18.1", "18.2", "18.3", "18.4", "18.5", "18.6"] },
-    { "id": 18, "tasks": ["20.1", "20.2", "21.1", "21.2"] },
-    { "id": 19, "tasks": ["21.3", "21.4", "21.5", "22.1"] },
-    { "id": 20, "tasks": ["22.2", "22.3", "23.1", "23.2"] },
-    { "id": 21, "tasks": ["24.1", "24.2"] },
-    { "id": 22, "tasks": ["26.1", "26.2", "27.1", "27.2"] },
-    { "id": 23, "tasks": ["28.1"] },
-    { "id": 24, "tasks": ["28.2"] }
+    { "id": 0, "tasks": ["16.1"] },
+    { "id": 1, "tasks": ["16.2", "16.3", "16.5"] },
+    { "id": 2, "tasks": ["16.4", "16.6", "16.7", "16.8"] },
+    { "id": 3, "tasks": ["18.1", "18.2", "18.3", "18.4", "18.5"] },
+    { "id": 4, "tasks": ["18.6", "27.1", "27.2"] },
+    { "id": 5, "tasks": ["20.1", "20.2"] },
+    { "id": 6, "tasks": ["21.1", "21.2", "21.3", "21.4", "21.5"] },
+    { "id": 7, "tasks": ["22.1", "22.2", "22.3"] },
+    { "id": 8, "tasks": ["23.1", "23.2"] },
+    { "id": 9, "tasks": ["24.1", "24.2"] },
+    { "id": 10, "tasks": ["26.1", "26.2"] },
+    { "id": 11, "tasks": ["28.1"] },
+    { "id": 12, "tasks": ["28.2"] }
   ]
 }
 ```
