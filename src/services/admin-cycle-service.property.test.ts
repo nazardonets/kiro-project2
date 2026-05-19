@@ -168,11 +168,11 @@ const cycleLengthArb = fc.integer({ min: 21, max: 45 });
 
 /** Arbitrary for start_date (ISO date string within past year) */
 const startDateArb = fc
-  .date({
-    min: new Date('2023-01-01'),
-    max: new Date('2024-12-31'),
+  .integer({
+    min: new Date('2023-01-01').getTime(),
+    max: new Date('2024-12-31').getTime(),
   })
-  .map((d) => d.toISOString().split('T')[0]);
+  .map((ts) => new Date(ts).toISOString().split('T')[0]);
 
 /** Operation types that can be performed on a cycle instance */
 type AdminOperation =

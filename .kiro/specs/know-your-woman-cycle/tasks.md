@@ -387,7 +387,7 @@ This plan implements a full-stack Next.js 14 application with Supabase (PostgreS
     - **Property 13: Admin Override Revert Round Trip**
     - **Validates: Requirements 6.9**
 
-- [ ] 17. Checkpoint - Ensure all service and business logic tests pass
+- [x] 17. Checkpoint - Ensure all service and business logic tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 18. API routes - authentication and cycle management
